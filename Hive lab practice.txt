@@ -1,0 +1,255 @@
+
+>hive
+
+Create Database Statement
+
+hive>CREATE DATABASE [IF NOT EXISTS] userdb;
+
+or
+
+hive> CREATE SCHEMA userdb;
+
+hive> SHOW DATABASES;
+
+---------------------------------------
+
+Drop Database Statement
+
+hive>DROP DATABASE IF EXISTS userdb;
+
+check with Show Databases;
+
+The following query drops the database using CASCADE. 
+It means dropping respective tables before dropping the database.
+
+hive> DROP DATABASE IF EXISTS userdb CASCADE;
+
+
+The following query drops the database using SCHEMA.
+
+hive> DROP SCHEMA userdb;
+----------------------------------------------
+
+Example
+Let us assume you need to create a table named employee using CREATE TABLE statement. 
+The following table lists the fields and their data types in employee table:
+
+Sr.No	Field Name	Data Type
+1	Eid		int
+2	Name		String
+3	Salary		Float
+4	Designation	string
+
+hive>CREATE TABLE IF NOT EXISTS employee 
+( eid int, name String,salary String, designation String) 
+row format delimited  
+fields terminated by ',';
+
+
+hive> show tables;
+OK
+employee
+Time taken: 0.034 seconds, Fetched: 1 row(s)
+--------------------------------------------------------
+in new terminal create sample.txt
+>cat sample.txt
+
+1201,Gopal       45000    Technical manager
+1202  Manisha     45000    Proof reader
+1203  Masthanvali 40000    Technical writer
+1204  Kiran       40000    Hr Admin
+1205  Kranthi     30000    Op Admin
+
+ctrl+d
+-----------------------------------------------
+
+Load Data Statement
+
+
+hive> LOAD DATA LOCAL INPATH '/home/cloudera/sample.txt' OVERWRITE INTO TABLE employee;
+
+Loading data to table default.employee
+Table default.employee stats: [numFiles=1, numRows=0, totalSize=201, rawDataSize=0]
+OK
+Time taken: 0.556 seconds
+----------------------------------------------------
+
+Alter Table Statement
+
+Syntax
+===========
+The statement takes any of the following syntaxes based on what attributes we wish to modify in a table.
+
+ALTER TABLE name RENAME TO new_name
+ALTER TABLE name ADD COLUMNS (col_spec[, col_spec ...])
+ALTER TABLE name DROP [COLUMN] column_name
+ALTER TABLE name CHANGE column_name new_name new_type
+ALTER TABLE name REPLACE COLUMNS (col_spec[, col_spec ...])
+===========
+----------------------------------
+Rename To… Statement
+The following query renames the table from employee to emp.
+
+hive> ALTER TABLE employee RENAME TO emp;
+
+OK
+Time taken: 0.363 seconds
+-------------------------------------
+hive> show tables;
+OK
+emp
+Time taken: 0.153 seconds, Fetched: 1 row(s)
+hive> desc emp;
+OK
+eid                 	int                 	                    
+name                	string              	                    
+salary              	string              	                    
+destination         	string              	                    
+Time taken: 0.082 seconds, Fetched: 4 row(s)
+----------------------------------------------------
+=================
+The following table contains the fields of employee table and it shows the fields to be changed (in bold).
+
+Field Name	Convert from Data Type	Change Field Name	Convert to Data Type
+Table:
+eid		int		eid		int
+name		String		ename		String
+salary		Float		salary		Double
+designation	String		designation	String
+=================
+---------------------------------------------------
+hive> ALTER TABLE emp CHANGE name ename String;
+OK
+Time taken: 0.1 seconds
+hive> desc emp;
+OK
+eid                 	int                 	                    
+ename               	string              	                    
+salary              	string              	                    
+destination         	string              	                    
+Time taken: 0.04 seconds, Fetched: 4 row(s)
+----------------------------------------------------
+hive> ALTER TABLE emp CHANGE salary salary Double;
+OK
+Time taken: 0.062 seconds
+hive> desc emp;
+OK
+eid                 	int                 	                    
+ename               	string              	                    
+salary              	double              	                    
+destination         	string              	                    
+Time taken: 0.05 seconds, Fetched: 4 row(s)
+-------------------------------------------------------
+Add Columns Statement
+The following query adds a column named dept to the employee table.
+
+hive> ALTER TABLE emp ADD COLUMNS (dept STRING COMMENT 'Department name');
+
+OK
+Time taken: 0.069 seconds
+hive> desc emp;
+OK
+eid                 	int                 	                    
+ename               	string              	                    
+salary              	double              	                    
+destination         	string              	                    
+dept                	string              	Department name     
+Time taken: 0.029 seconds, Fetched: 5 row(s)
+------------------------------------------------------------
+Replace Statement
+The following query deletes all the columns from the employee table and replaces it with emp and name columns:
+
+hive> ALTER TABLE emp REPLACE COLUMNS ( eid INT, empid Int, ename STRING, name String);
+
+
+
+
+
+---------------------------------------------
+
+Drop Table Statement
+
+
+hive> DROP TABLE IF EXISTS emp;
+
+OK
+Time taken: 5.3 second
+------------------------------------------
+There are four types of operators in Hive:
+
+Relational Operators
+Arithmetic Operators
+Logical Operators
+Complex Operators
+--------------------------
+
+employee table
+
++-----+--------------+--------+---------------------------+------+
+| Id  | Name         | Salary | Designation               | Dept |
++-----+--------------+------------------------------------+------+
+|1201 | Gopal        | 45000  | Technical manager         | TP   |
+|1202 | Manisha      | 45000  | Proofreader               | PR   |
+|1203 | Masthanvali  | 40000  | Technical writer          | TP   |
+|1204 | Krian        | 40000  | Hr Admin                  | HR   |
+|1205 | Kranthi      | 30000  | Op Admin                  | Admin|
++-----+--------------+--------+---------------------------+------+
+
+hive> SELECT * FROM employee WHERE Id=1205;
+
+hive> SELECT * FROM employee WHERE Salary>=40000;
+
+hive> SELECT 20+30 ADD FROM temp; // insted of temp use any table name
+
+hive> SELECT * FROM employee WHERE Salary>40000 && Dept=TP;
+
+--------------------
+Built-In Functions
+
+round() function
+hive> SELECT round(2.6) from temp;
+
+floor() function
+hive> SELECT floor(2.6) from temp;
+
+ceil() function
+hive> SELECT ceil(2.6) from temp;
+-------------------------------
+Creating a View
+
+hive> CREATE VIEW emp_30000 AS
+SELECT * FROM employee
+WHERE salary>30000;
+
+hive> DROP VIEW emp_30000;
+---------------------------------
+
+hive> SELECT Id, Name, Dept FROM employee ORDER BY DEPT;
+
+hive> SELECT Dept,count(*) FROM employee GROUP BY DEPT;
+
+-------------------------------
+There are different types of joins given as follows:
+
+JOIN
+LEFT OUTER JOIN
+RIGHT OUTER JOIN
+FULL OUTER JOIN
+-----------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
