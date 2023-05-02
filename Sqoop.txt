@@ -21,6 +21,16 @@ sqoop import --connect jdbc:mysql://localhost/demo --username root --password cl
 
 hadoop dfs -cat Employee/*
 
+
+
+***Eval Operations MySql Table***
+
+sqoop eval --connect jdbc:mysql://localhost/jai --username root --password cloudera --query "select * from employee"
+
+sqoop eval --connect jdbc:mysql://localhost/jai --username root --password cloudera -e "insert into employee values(7,'Ram','1987-11-21','M',50000)"
+
+
+
 ***Exporting HDFS Data to MySql Table***
 
 CREATE TABLE EmployeeNew (Id int Not NULL,  Name VARCHAR(20),DOB  DATE, _
